@@ -19,6 +19,11 @@ const eventSchema = new mngoose.Schema({
         type: Date,
         required: true
     },
+
+    created_at: {
+        type: Date,
+        required: true
+    }
 })
 
 let Event = mngoose.model('Event', eventSchema, 'events');
