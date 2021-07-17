@@ -28,6 +28,23 @@ res.render('event/create')
 //save event to DB
 router.post('/create', (req,res)=> {
     console.log(req.body)
+
+    let newEvent = new Event({
+        title: req.body.title,
+        description: req.body.description,
+        location: req.body.location,
+        date: req.body.date,
+        created_at: Date.now()
+    })
+    newEvent.save((err)=>{
+        if(!err){
+            console.log("ADD")
+            res.redirect('/events')
+        }
+        else{
+            console.log("error")
+        }
+    })
   })
 
 //show single event
