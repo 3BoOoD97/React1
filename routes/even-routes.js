@@ -1,5 +1,5 @@
 const express = require("express");
-const { event } = require("jquery");
+const { event, get } = require("jquery");
 const router = express.Router();
 const Event = require('../models/event')
 
@@ -20,14 +20,24 @@ router.get('/', (req,res)=> {
     })
 })
 
+// create a new event
+router.get('/create', (req,res)=> {
+res.render('event/create')
+})
+
+//save event to DB
+router.post('/create', (req,res)=> {
+    console.log(req.body)
+  })
+
 //show single event
 router.get('/:id', (req,res)=> {
-    Event.find({_id: req.params.id}, (err,event)=>{
+    Event.findOne({_id: req.params.id}, (err,event)=>{
         if(!err){
-            console.log(event)
-        res.render('event/show')
+        res.render('event/show', {
+            event: event
+        })
         }
-        
     })
 })
 

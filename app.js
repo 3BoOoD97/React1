@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express()
 const db = require ('./config/database.js') //connect to database
+var bodyParser = require('body-parser')
 
 //bring static
 app.use(express.static('public'))
@@ -9,6 +10,10 @@ app.use(express.static('node_modules'))
 
 //bring ejs template
 app.set('view engine', 'ejs');
+
+//bring BodyParser
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 
 
