@@ -7,6 +7,15 @@
 
             <div class="col-md-9 offset-md-3">
                 <h1 class="display-4">Add a new event</h1>
+                <hr>
+                <% if (errors) { %>
+                <% errors.forEach((err)=> {%>
+                    <div class="alert alert-danger" role="alert">
+                    <%= err.msg %>
+            </div>
+                    <%})%>
+                    <%}%>
+
                 <form action="/events/create" method="post">
 
 <div class="form-group">
@@ -34,10 +43,6 @@
 </div>
             </form>
         </div>
-
-
     </div>
-
 </div>
-
         <%- include('../partials/footer.ejs') -%>
