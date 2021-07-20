@@ -3,7 +3,7 @@ const { event, get } = require("jquery");
 const router = express.Router();
 const Event = require('../models/event')
 const { check, validationResult } = require('express-validator');
-
+const momnet = require('momnet')
 //route to home event
 router.get('/', (req,res)=> {
     Event.find({},(err,events)=>{
@@ -76,4 +76,24 @@ router.get('/:id', (req,res)=> {
     })
 })
 
+//edit route 
+router.get('/edit/:id', (req, res)=>{
+    Event.findOne({_id: req.params.id}, (err,event)=>{
+        if(!err){
+        res.render('event/edit', {
+            event: event,
+            eventDate: momnet(event.date).format('YYYY-MM-DD')
+        })
+        }
+        else{
+            console.log("error")
+        }
+    })
+})
+
+//update the form
+router.post('/update', (req, res)=>{
+    console.log(req.body)
+
+})
 module.exports = router;
