@@ -80,9 +80,11 @@ router.get('/:id', (req,res)=> {
 router.get('/edit/:id', (req, res)=>{
     Event.findOne({_id: req.params.id}, (err,event)=>{
         if(!err){
-        res.render('event/edit', {
+            res.render('event/edit', {
             event: event,
-            eventDate: momnet(event.date).format('YYYY-MM-DD')
+            eventDate: momnet(event.date).format('YYYY-MM-DD'),
+            errors: req.flash('errors'),
+            message: req.flash('info')
         })
         }
         else{
@@ -92,8 +94,38 @@ router.get('/edit/:id', (req, res)=>{
 })
 
 //update the form
-router.post('/update', (req, res)=>{
-    console.log(req.body)
+router.post('/update',[
+    check('title').isLength({min: 5}).withMessage('Title should be more than five'),
+    check('description').isLength({min: 5}).withMessage('description should be more than five'),
+    check('location').isLength({min: 5}).withMessage('location should be more than five'),
+    check('date').isLength({min: 5}).withMessage('Date should be valid'),
+],(req, res)=>{
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {    
+        req.flash('errors', errors.array())
+        res.redirect('/events/edit/' + req.body.id)
+    } else {
+        // Create object
+        let newObj = {
+            title: req.body.title,
+            description: req.body.description,
+            location: req.body.location,
+            date: req.body.date,
+
+        }
+        let query = {_id: req.body.id}
+        Event.updateOne(query, newObj, (err)=>{
+            if(!err){
+                req.flash('info', "The event was updated succesfuly")
+                res.redirect('/events/edit/' + req.body.id)
+            }
+            else{
+                console.log(err)
+            }
+        })
+    }
 
 })
 module.exports = router;
