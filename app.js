@@ -31,13 +31,16 @@ app.use(bodyParser.json())
 
 
 app.get('/', (req,res)=>{
-  res.send("Work");
+  res.redirect('/events')
 });
 
-//bring events route
+//bring users route
+const users = require ('./routes/user-routes')
+app.use('/users', users)
+
+//brin events routes
 const events = require ('./routes/even-routes')
 app.use('/events', events)
-
 
 //listen to port 3000
 app.listen(3000, ()=>{

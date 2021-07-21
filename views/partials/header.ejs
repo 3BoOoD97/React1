@@ -6,27 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" src="css/custom.css">
-
-    <script>
-     function deleteEvent() {
-    let btn = document.getElementById('deleteBtn')
-    let id = btn.getAttribute('data-id')
-
-    axios.delete('/events/delete/'+ id)
-    .then( (res)=> {
-        console.log(res.data)
-        alert('event was deleted')
-        window.location.href = '/events'
-    })
-
-    .catch( (err)=> {
-
-        console.log(err)
-    })
-}
-
-        </script>
-
 </head>
 <body>
     
