@@ -4,6 +4,13 @@ const router = express.Router();
 const Event = require('../models/event')
 const { check, validationResult } = require('express-validator');
 const momnet = require('momnet')
+
+// middleware to check if the user is logged in
+isAuthenticated  = (req,res,next)=>{
+    if (req.isAuthenticated()) return next()
+    res.redirect('/users/login')
+}
+
 //route to home event
 router.get('/', (req,res)=> {
     Event.find({},(err,events)=>{
@@ -23,7 +30,7 @@ router.get('/', (req,res)=> {
 })
 
 // create a new event
-router.get('/create', (req,res)=> {
+router.get('/create', isAuthenticated,(req,res)=> {
 res.render('event/create',{
     errors: req.flash('errors')
 })

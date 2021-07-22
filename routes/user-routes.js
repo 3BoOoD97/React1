@@ -6,7 +6,7 @@ const passport = require('passport')
 // middleware to check if the user is logged in
    isAuthenticated  = (req,res,next)=>{
     if (req.isAuthenticated()) return next()
-    res.redirect('user/login')
+    res.redirect('/users/login')
 }
 //Sign up form
 router.get('/signup', (req, res) => {
