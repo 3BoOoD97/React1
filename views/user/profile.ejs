@@ -11,6 +11,11 @@
            
              
                             <%- include('../partials/flashMessage.ejs') -%>
+                            <p>
+                                <% if (user) { %>
+                                    Welcome .. your Email is <%= user.email %>
+                                    <% }%>
+                            </p>
                       
         </div>
     </div>

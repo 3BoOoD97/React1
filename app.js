@@ -4,7 +4,8 @@ const db = require ('./config/database.js') //connect to database
 var bodyParser = require('body-parser')
 const session= require('express-session')
 const flash= require('connect-flash')
-
+const passport = require("passport");
+const passportSetup = require('./config/passport-setup')
 
 //bring static
 app.use(express.static('public'))
@@ -19,7 +20,15 @@ app.use(session({
 }))
 app.use(flash())
 
+//bring passport 
+app.use(passport.initialize())
+app.use(passport.session())
 
+// store user object
+app.get('*', (req,res,next)=> {
+  res.locals.user = req.user || null
+  next()
+})
 //bring ejs template
 app.set('view engine', 'ejs');
 

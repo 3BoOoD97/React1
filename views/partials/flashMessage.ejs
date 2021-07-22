@@ -11,3 +11,18 @@
             <%= message %>
     </div>
             <%}%>   
+
+            
+
+            <% if (locals.success && success!="") { %>  
+                <div class="alert alert-success mt-3" role="alert">
+                <%= success %>
+        </div>
+                <%}%>   
+
+
+                <% if (locals.error && error!="") { %>  
+                        <div class="alert alert-danger mt-3" role="alert">
+                        <%= error %>
+                </div>
+                        <%}%>   
