@@ -3,7 +3,8 @@ const { event, get } = require("jquery");
 const router = express.Router();
 const Event = require('../models/event')
 const { check, validationResult } = require('express-validator');
-const momnet = require('momnet')
+const momnet = require('momnet');
+const { response } = require("express");
 
 // middleware to check if the user is logged in
 isAuthenticated  = (req,res,next)=>{
@@ -11,30 +12,55 @@ isAuthenticated  = (req,res,next)=>{
     res.redirect('/users/login')
 }
 
-//route to home event
-router.get('/', (req,res)=> {
-    Event.find({},(err,events)=>{
-       // res.json(events)
-       let chunk = []
-       let chunkSize = 3
-       for(let i=0; i<events.length; i+=chunkSize){
-           chunk.push(events.slice(i, chunkSize+i))
-       }
-       //res.json(chunk)
-       res.render('event/index', {
-           chunk: chunk,
-           message: req.flash('info')
-       })
-
-    })
-})
-
 // create a new event
 router.get('/create', isAuthenticated,(req,res)=> {
-res.render('event/create',{
-    errors: req.flash('errors')
+    res.render('event/create',{
+        errors: req.flash('errors')
+    })
+    })
+    
+//route to home event
+router.get('/:pageNo?', (req,res)=> {
+    let pageNo = 1
+
+    if(req.params.pageNo){
+        pageNo  = parseInt(req.params.pageNo)
+    }
+    if(req.params.pageNo == 0){
+        pageNo= 1
+    }
+
+    let q = {
+        skip: 5*(pageNo-1),
+        limit: 5
+    }
+
+    // find total records
+    let totalDoc = 0
+    Event.countDocuments({}, (err, total)=>{
+
+    }).then((response)=>{
+        totalDoc = parseInt(response)
+
+        Event.find({},{},q,(err,events)=>{
+            // res.json(events)
+            let chunk = []
+            let chunkSize = 3
+            for(let i=0; i<events.length; i+=chunkSize){
+                chunk.push(events.slice(i, chunkSize+i))
+            }
+            //res.json(chunk)
+            res.render('event/index', {
+                chunk: chunk,
+                message: req.flash('info'),
+                total: parseInt(totalDoc),
+                pageNo: pageNo
+            })
+         })
+    })
+   
 })
-})
+
 
 //save event to DB
 router.post('/create', [
@@ -57,6 +83,7 @@ router.post('/create', [
             description: req.body.description,
             location: req.body.location,
             date: req.body.date,
+            user_id: req.user.id,
             created_at: Date.now()
         })
     
@@ -73,7 +100,7 @@ router.post('/create', [
   })
 
 //show single event
-router.get('/:id', (req,res)=> {
+router.get('/show/:id', (req,res)=> {
     Event.findOne({_id: req.params.id}, (err,event)=>{
         if(!err){
         res.render('event/show', {
@@ -84,7 +111,7 @@ router.get('/:id', (req,res)=> {
 })
 
 //edit route 
-router.get('/edit/:id', (req, res)=>{
+router.get('/edit/:id', isAuthenticated, (req, res)=>{
     Event.findOne({_id: req.params.id}, (err,event)=>{
         if(!err){
             res.render('event/edit', {
@@ -106,7 +133,7 @@ router.post('/update',[
     check('description').isLength({min: 5}).withMessage('description should be more than five'),
     check('location').isLength({min: 5}).withMessage('location should be more than five'),
     check('date').isLength({min: 5}).withMessage('Date should be valid'),
-],(req, res)=>{
+], isAuthenticated, (req, res)=>{
 
     const errors = validationResult(req)
 
@@ -136,7 +163,7 @@ router.post('/update',[
 })
 
 //delete event
-router.delete('/delete/:id', (req,res)=> {
+router.delete('/delete/:id', isAuthenticated,(req,res)=> {
 
     let query = {_id: req.params.id}
 

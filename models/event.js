@@ -20,6 +20,11 @@ const eventSchema = new mngoose.Schema({
         required: true
     },
 
+    user_id: {
+        type: String,
+        required: true
+    },
+
     created_at: {
         type: Date,
         required: true

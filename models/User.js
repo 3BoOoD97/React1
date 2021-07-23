@@ -11,6 +11,12 @@ const userSchema = new mngoose.Schema({
         required: true
     },
 
+    avatar: {
+        type: String,
+        required: true
+
+    }
+
 })
 
 userSchema.methods.hashPassword = (password)=> {
